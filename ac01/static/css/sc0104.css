@@ -1,0 +1,55 @@
+table.TblControl{
+	width:	100%;
+	border-style:	none;
+}
+
+table.TblControl th{
+	border-style:	none;
+}
+
+table.TblControl td{
+	border-style:	none;
+}
+
+#id_category{
+	width:	100%;
+}
+
+div.DivDataList{
+	width:	100%;
+	height:	272px;
+	overflow-y:	scroll;
+	border:	solid 1px black;
+}
+
+table.TblDataList{
+	width:	100%;
+	border:	solid 1px black;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+table.TblDataList thead th{
+	background-color:	silver;
+	border:	solid 1px black;
+	text-align: center;
+}
+
+table.TblDataList tbody th{
+	border:	solid 1px black;
+	text-align: center;
+}
+
+table.TblDataList tbody td{
+	border:	solid 1px black;
+}
+
+div.DivDataPhoto{
+	width:	100%;
+	height:	120px;
+	border:	solid 1px black;
+}
+
+#imgPhoto{
+	width:	100%;
+}

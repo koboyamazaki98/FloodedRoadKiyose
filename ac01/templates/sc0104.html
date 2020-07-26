@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>清瀬市冠水状況画像データベースシステム</title>
+  	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/common.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/sc0104.css' %}">
+	<script type="text/javascript" src="{% static 'js/jquery/jquery-3.4.1.slim.min.js' %}" ></script>
+	<script type="text/javascript" src="{% static 'js/common.js' %}" ></script>
+	<script type="text/javascript">
+		//ページロード
+		function sc0104Load(sender){
+			commonPageLoad(sender);
+			$('#id_category').change(function (sender) {
+				categoryChanged(sender);
+			});
+		}
+
+		//カテゴリー選択
+		function categoryChanged(sender){
+			document.frm0104search.submit();
+		}
+
+		//一覧行選択
+		function rdoSelectLineChange(sender){
+			$('#imgPhoto').attr('src', $(sender).data('image_url'));
+			// var linePhoto = "linePhoto" + sender.value;
+			// $('#imgPhoto').attr('src', $('#' + linePhoto).val();)
+		}
+
+		//操作ボタンクリック
+		function btnMenuClick(sender){
+			commonFormSubmit(sender, document.frm0104);
+		}
+	</script>
+</head>
+<body onload="sc0104Load(this)">
+<div class="DivBody" id="divBody">
+<h1>清瀬市冠水状況画像データベースシステム</h1>
+<table class="TblH2"><tr><td class="TblH2Td1">SC0104 - 写真一覧<td class="TblH2Td2"><span id="spnOpTime"></span></table>
+<form id="frm0104Search" name="frm0104search" method="get" >
+	<table class="TblControl">
+		<tr><td width="60">分類：
+			<td>{{ form.category }}
+	</table>
+</form>
+	<div class="DivDataList">
+		<table class="TblDataList">
+			<thead>
+				<tr><th width="24"><th width="120">日時<th width="100">丁目<th>詳細
+			</thead>
+			<tbody>
+				{% for photo in photos %}
+					<tr><th><input type="radio" name="selectline" value="{{ photo.id }}" data-image_url="{{ photo.photo.url }}" onchange="rdoSelectLineChange(this);" />
+						<!-- input type="hidden" id="linePhoto{{ photo.id }}" value="{{ photo.photo.url }}" / -->
+						<td>{{ photo.data_time }}
+						<td>{{ photo.chome.chome }}
+						<td style="overflow:hidden;">{{ photo.detail }}
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div class="d-flex justify-content-center">
+		<img id="imgPhoto" width="640">
+	</div>
+<form id="frm0104" name="frm0104" method="post" >
+	{% csrf_token %}
+	<input type="hidden" id="hdnFunctionCd" name="function_cd" value="{{ form.function_cd }}" />
+	<input type="hidden" id="hdnOpTime" name="op_time" value="{{ form.op_time }}" />
+	<div class="DivControl">
+		<button class="ButtonFunc" id="btnFunc01" value="99" onclick="btnMenuClick(this);">戻る</button>
+	</div>
+</form>
+</div>
+</body>
+</html>

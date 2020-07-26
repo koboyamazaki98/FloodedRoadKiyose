@@ -1,0 +1,21 @@
+div.DivBody{
+	height:	840px;
+}
+div.DivDropArea{
+	margin: 4px auto 0px auto;
+	width:	92%;
+	height:	52px;
+	border: solid 2px gray;
+	overflow:   scroll;
+}
+table.tblDetail{
+	margin: 0px;
+	width:	100%;
+	padding: 0px;
+}
+.form-control{
+	width:	100%
+}
+#selDTime, #selChome, #id_detail, #txtMenberNo{
+	width:	100%
+}

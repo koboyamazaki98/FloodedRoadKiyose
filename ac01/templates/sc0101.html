@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>清瀬市冠水状況画像データベースシステム</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}">
+  <script type="text/javascript" src="{% static 'js/jquery/jquery-3.4.1.slim.min.js' %}" ></script>
+  <script type="text/javascript" src="{% static 'js/common.js' %}" ></script>
+  <script type="text/javascript">
+    //ページロード
+    function sc0101Load(sender){
+      commonPageLoad(sender);
+    }
+
+    //メニューボタンクリック
+    function btnMenuClick(sender){
+      commonFormSubmit(sender, document.frm0101);
+    }
+  </script>
+</head>
+<body onload="sc0101Load(this);">
+<div class="DivBody" id="divBody">
+<h1>清瀬市冠水状況画像データベースシステム</h1>
+<table class="TblH2"><tr><td class="TblH2Td1">SC0101 - メニュー<td class="TblH2Td2"><span id="spnOpTime"></span></table>
+<form id="frm0101" name="frm0101" method="post">
+  {% csrf_token %}
+  <input type="hidden" id="hdnFunctionCd" name="function_cd" value="{{ form.function_cd }}" />
+  <input type="hidden" id="hdnOpTime" name="op_time" value="{{ form.op_time }}" />
+  <p style="text-align:right;">
+
+  </p>
+  <p style="text-align:center;">
+  <button class="ButtonMenu" id="btnMenu01" value="02" onclick="btnMenuClick(this);">写真投稿</button>
+  <button class="ButtonMenu" id="btnMenu02" value="04" onclick="btnMenuClick(this);">写真一覧</button>
+  </p>
+</form>
+</div>
+</body>
+</html>

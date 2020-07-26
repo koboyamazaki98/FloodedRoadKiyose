@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>清瀬市冠水状況画像データベースシステム（テスト）</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'js/jquery-ui/jquery-ui.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/sc0102.css' %}">
+	<script type="text/javascript" src="{% static 'js/jquery/jquery-3.4.1.slim.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery-ui/jquery-ui.js' %}" ></script>
+	<script type="text/javascript" src="{% static 'js/common.js' %}" ></script>
+	<script type="text/javascript">
+		//ページ・ロード
+		function sc0102Load(sender){
+			commonPageLoad(sender);
+
+			$('#id_photo').change(function (e) {
+				photoChanged(e);
+			});
+
+			$("#txt_entrydate").val($("#hdnDataTime").val().slice(0, 4) + "/" + $("#hdnDataTime").val().slice(4, 6) + "/" + $("#hdnDataTime").val().slice(6, 8))
+			$("#sel_entrytime").val($("#hdnDataTime").val().slice(8, 12))
+			$("#divDatePicker").datepicker({
+				dateFormat: "yy/mm/dd",
+				timepicker: true,
+				step:10,
+				onSelect: function(dateText, inst){
+					$("#txt_entrydate").val(dateText);
+					$("#divDatePicker").hide();
+				},
+				onMouseOut: function(){
+					$("#divDatePicker").hide();
+				}
+			});
+		}
+
+		//画像設定
+		function photoChanged(e){
+			// ファイルオブジェクトを取得する
+			const file = e.target.files[0];
+			const reader = new FileReader();
+
+			// アップロードした画像を設定する
+			reader.onload = (function (file) {
+				return function (e) {
+					$('#imgPreView').attr('src', e.target.result);
+					$('#imgPreView').attr('title', file.name);
+				};
+			})(file);
+
+			//$('#divDropArea').css('height', '768px');
+			//$('#divBody').css('height', '1600px');
+			reader.readAsDataURL(file);
+		}
+
+		//DetePicker表示
+		function showDatePicker(){
+			$("#divDatePicker").show();
+		}
+
+		//DetePicker、マウスが外へ移動
+		function divDatePickerMouseLeave(sender){
+			$("#divDatePicker").hide();
+		}
+
+		//操作ボタンクリック
+		function btnMenuClick(sender){
+		 	if(sender.value == '02'){
+		 		var entdate0 = $('#txt_entrydate').val();
+		 		var entdate = entdate0.replace("/", "");
+		 		while(entdate != entdate0){
+		 			entdate0 = entdate;
+		 			entdate = entdate0.replace("/", "");
+		 		}
+		 		$('#id_code').val('0000000000')
+		 		$('#id_dtime').val(entdate + $('#sel_entrytime').val())
+		 		$('#id_chome').val($('#selChome').val());
+		 	}
+		 	commonFormSubmit(sender, document.frm0102);
+		}
+	</script>
+</head>
+<body onload="sc0102Load(this)">
+<div class="DivBody" id="divBody">
+<h1>清瀬市冠水状況画像データベースシステム</h1>
+<table class="TblH2"><tr><td class="TblH2Td1">SC0102 - 写真投稿<td class="TblH2Td2"><span id="spnOpTime"></span></table>
+<form id="frm0102" name="frm0102" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+	<input type="hidden" id="hdnFunctionCd" name="function_cd" value="{{ form.function_cd }}" />
+	<input type="hidden" id="hdnOpTime" name="op_time" value="{{ form.op_time }}" />
+	{{ form.code.as_hidden }}
+	{{ form.dtime.as_hidden }}
+	<input type="hidden" id="hdnDataTime" name="data_time" value="{{ form.data_time }}" />
+	{{ form.chome.as_hidden }}
+	<table class="tblDetail">
+		<tr style="height=4px"><th width="80"><th>
+		<tr style="vertical-align:top;"><td colspan="2">写真を指定してください：
+		{% if form.photo.errors %}
+		  {{ form.photo.errors }}
+		{% endif %}
+		<tr style="vertical-align:top;"><td colspan="2">
+			<!-- div class="DivDropArea" id="divDropArea" -->
+			<div class="d-flex justify-content-center" id="divDropArea">
+				{{ form.photo }}<br>
+				<img id="imgPreView" style="width:100%;" >
+			</div>
+		<tr style="vertical-align:bottom;"><td>日時：
+			<td><input type="text" required id="txt_entrydate" size="10" maxlength="10" />
+				<img src="{% static 'image/dateicon.png' %}" onclick="showDatePicker()">　
+				<select id="sel_entrytime">
+			    	{% for sel_time in form.sel_time_list %}
+						<option value="{{ sel_time.val }}">{{ sel_time.txt }}</option>
+					{% endfor %}
+				</select>
+				<div id="divDatePicker" style="width:240px;display:none;" onmouseleave="divDatePickerMouseLeave(this);" ></div>
+
+		<tr><td colspan="2" style="text-align:center">
+			<img src="{% static 'image/KiyoseMap.png' %}">
+		<tr><td>丁目：
+		<td><select name="chome" id="selChome" >
+			<option value="101">下宿1丁目</option>
+			<option value="0102">下宿2丁目</option>
+			<option value="0103">下宿3丁目</option>
+			<option value="0201">旭ヶ丘1丁目</option>
+			<option value="0202">旭ヶ丘2丁目</option>
+			<option value="0203">旭ヶ丘3丁目</option>
+			<option value="0204">旭ヶ丘4丁目</option>
+			<option value="0205">旭ヶ丘5丁目</option>
+			<option value="0206">旭ヶ丘6丁目</option>
+			<option value="0301">中里1丁目</option>
+			<option value="0302">中里2丁目</option>
+			<option value="0303">中里3丁目</option>
+			<option value="0304">中里4丁目</option>
+			<option value="0305">中里5丁目</option>
+			<option value="0306">中里6丁目</option>
+			<option value="0401">野塩1丁目</option>
+			<option value="0402">野塩2丁目</option>
+			<option value="0403">野塩3丁目</option>
+			<option value="0404">野塩4丁目</option>
+			<option value="0405">野塩5丁目</option>
+			<option value="0501">梅園1丁目</option>
+			<option value="0502">梅園2丁目</option>
+			<option value="0503">梅園3丁目</option>
+			<option value="0601">竹丘1丁目</option>
+			<option value="0602">竹丘2丁目</option>
+			<option value="0603">竹丘3丁目</option>
+			<option value="0701">松山1丁目</option>
+			<option value="0702">松山2丁目</option>
+			<option value="0703">松山3丁目</option>
+			<option value="0801">元町1丁目</option>
+			<option value="0802">元町2丁目</option>
+			<option value="0901">上清戸1丁目</option>
+			<option value="0902">上清戸2丁目</option>
+			<option value="1001">中清戸1丁目</option>
+			<option value="1002">中清戸2丁目</option>
+			<option value="1003">中清戸3丁目</option>
+			<option value="1004">中清戸4丁目</option>
+			<option value="1005">中清戸5丁目</option>
+			<option value="1101">下清戸1丁目</option>
+			<option value="1102">下清戸2丁目</option>
+			<option value="1103">下清戸3丁目</option>
+			<option value="1104">下清戸4丁目</option>
+			<option value="1105">下清戸5丁目</option>
+		</select>
+		<tr><td>詳細：<td>{{ form.detail }}<!--<input type="text" id="id_detail" name="detail" value="" maxlength="64" / -->
+		<tr><td>会員番号：<td>{{ form.member_no }}
+		{% if form.member_no.errors %}
+		  {{ form.member_no.errors }}
+		{% endif %}
+	</table>
+	<div class="DivControl">
+		<button class="ButtonFunc" id="btnFunc01" value="02" onclick="btnMenuClick(this);">登録</button>
+		<button class="ButtonFunc" id="btnFunc02" value="99" onclick="btnMenuClick(this);">取消</button>
+	</div>
+</form>
+</div>
+</body>
+</html>
